@@ -4,6 +4,8 @@ import be.abis.exercise.exception.PersonNotFoundException;
 import be.abis.exercise.model.Person;
 import be.abis.exercise.repository.FilePersonRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,8 +14,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+
 class FilePersonRepositoryTest {
-    private FilePersonRepository filePersonRepository = FilePersonRepository.getInstance();
+    @Autowired private FilePersonRepository filePersonRepository;
 
     @Test
     public void arePersonsReadFromFile() throws IOException {
@@ -41,7 +45,7 @@ class FilePersonRepositoryTest {
     }
 
     @Test
-    public void findNonExistingByID() throws PersonNotFoundException {
+    public void findNonExistingByID() {
         assertThrows(PersonNotFoundException.class, () -> filePersonRepository.findPersonByID(10));
     }
 

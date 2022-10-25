@@ -1,10 +1,14 @@
 package be.abis.exercise;
 
 import be.abis.exercise.model.*;
+import be.abis.exercise.repository.CompanyRepository;
 import be.abis.exercise.repository.FileCompanyRepository;
 import be.abis.exercise.repository.FilePersonRepository;
+import be.abis.exercise.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -14,16 +18,18 @@ import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 class PublicSessionTest {
 
     private PublicSession publicSession;
-
+    @Autowired private CompanyRepository companyRepository;
+    @Autowired private PersonRepository personRepository;
 
     @BeforeEach
     void setUp() {
-        Company company = FileCompanyRepository.getInstance().getCompanies().get(0);
+        Company company = companyRepository.getCompanies().get(0);
         company.setAddress(new Address("Fonsnylaan", "223", "1190", "Brussel", "Belgie", "BE"));
-        List<Person> persons = FilePersonRepository.getInstance().getPersons();
+        List<Person> persons = personRepository.getPersons();
 
         publicSession = new PublicSession(Course.JAVA_ADVANCED, LocalDate.of(2022, 12, 18), company,
                 persons.get(0));

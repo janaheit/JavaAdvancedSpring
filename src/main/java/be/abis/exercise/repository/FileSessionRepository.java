@@ -6,7 +6,10 @@ import be.abis.exercise.exception.PersonNotFoundException;
 import be.abis.exercise.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,19 +22,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Repository
 public class FileSessionRepository implements SessionRepository {
-	private Logger log = LogManager.getLogger("exceptionLogger");
-
-	private static FileSessionRepository fileSessionRepository;
 
 	private ArrayList<Session> sessions = new ArrayList<>();
+	@Autowired private CompanyRepository companyRepository;
+	@Autowired private PersonRepository personRepository;
 
-	private FileSessionRepository(){
+	public FileSessionRepository(){
 
+
+
+		// Add some "find" methods in the SessionRepository
+		//   (e.g. find all sessions in a certain month and year; on a specific location; for a specific instructor; ...).
+	}
+	@PostConstruct
+	public void init(){
 		try {
 			List<String> sessionStrings = Files.readAllLines(Paths.get("/temp/javacourses/sessions.txt"));
 			for(String s:sessionStrings){
+				System.out.println(s);
 				Session session = createSession(s);
 				sessions.add(session);
 			}
@@ -40,11 +50,10 @@ public class FileSessionRepository implements SessionRepository {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
-		// Add some "find" methods in the SessionRepository
-		//   (e.g. find all sessions in a certain month and year; on a specific location; for a specific instructor; ...).
 	}
 
 	public List<Session> findSessionsByMonthAndYear(int month, int year) {
+		System.out.println(sessions);
 
 		return sessions.stream()
 				.filter(session -> (session.getDate().getMonthValue() == month) && (session.getDate().getYear() == year))
@@ -94,8 +103,8 @@ public class FileSessionRepository implements SessionRepository {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate date = LocalDate.parse(fields[2], formatter);
-		Company location = FileCompanyRepository.getInstance().findCompanyByName(fields[3]);
-		Instructor instructor = FilePersonRepository.getInstance().findPersonByName(fields[4]);
+		Company location = companyRepository.findCompanyByName(fields[3]);
+		Instructor instructor = personRepository.findPersonByName(fields[4]);
 		int sessionNr = Integer.parseInt(fields[5]);
 
 		PublicSession publicSession = new PublicSession(course,date,location,instructor);
@@ -108,7 +117,7 @@ public class FileSessionRepository implements SessionRepository {
 	private void addParticipantsToSession(PublicSession session, String[] fields) throws PersonNotFoundException {
 		for (int x=6; x<fields.length; x++){
 			try{
-				session.addEnrolment();FilePersonRepository.getInstance().findPersonByName(fields[x]);
+				session.addEnrolment(personRepository.findPersonByName(fields[x]));
 			} catch (PersonNotFoundException e) {
 				System.out.println(e.getMessage() + " They will not be added to the participant list.");
 			}
@@ -121,12 +130,12 @@ public class FileSessionRepository implements SessionRepository {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate date = LocalDate.parse(fields[2], formatter);
-		Company location = FileCompanyRepository.getInstance().findCompanyByName(fields[3]);
-		Instructor instructor = FilePersonRepository.getInstance().findPersonByName(fields[4]);
+		Company location = companyRepository.findCompanyByName(fields[3]);
+		Instructor instructor = personRepository.findPersonByName(fields[4]);
 
 		// Company Session specific fields
 
-		Company organiser = FileCompanyRepository.getInstance().findCompanyByName(fields[5]);
+		Company organiser = companyRepository.findCompanyByName(fields[5]);
 
 		int participantNr = Integer.parseInt(fields[6]);
 
@@ -190,12 +199,6 @@ public class FileSessionRepository implements SessionRepository {
 	public void setSessions(ArrayList<Session> sessions) {
 		this.sessions = sessions;
 	}
-	
 
-
-	public static FileSessionRepository getInstance() {
-		if (fileSessionRepository == null) fileSessionRepository = new FileSessionRepository();
-		return fileSessionRepository;
-	}
 
 }

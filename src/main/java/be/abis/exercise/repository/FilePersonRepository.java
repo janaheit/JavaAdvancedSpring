@@ -7,7 +7,9 @@ import be.abis.exercise.model.Company;
 import be.abis.exercise.model.Person;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,15 +19,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
+@Repository
 public class FilePersonRepository implements PersonRepository {
-	private Logger log = LogManager.getLogger("exceptionLogger");
-
-	private static FilePersonRepository filePersonRepository;
 
 	private ArrayList<Person> persons = new ArrayList<Person>();
 
-	private FilePersonRepository(){
+	public FilePersonRepository(){
+
+
+	}
+
+	@PostConstruct
+	public void init(){
 
 		try {
 			List<String> personStrings = Files.readAllLines(Paths.get("/temp/javacourses/persons.txt"));
@@ -37,7 +42,6 @@ public class FilePersonRepository implements PersonRepository {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
-
 	}
 
 	public Person createPerson(String personLine){
@@ -92,7 +96,6 @@ public class FilePersonRepository implements PersonRepository {
 				.filter(p -> p.getPersonNumber()==id)
 				.findAny()
 				.orElseThrow(() -> {
-					log.error("Person with number " + id + " was not found.");
 					return new PersonNotFoundException("Person with number " + id + " was not found.");
 				});
 
@@ -105,7 +108,6 @@ public class FilePersonRepository implements PersonRepository {
 				.filter(p -> p.getEmail().equals(email) && p.getPassword().equals(password))
 				.findAny()
 				.orElseThrow(() -> {
-					log.error("Person was not found.");
 					return new PersonNotFoundException("Email or password not correct for " + email);
 				});
 
@@ -118,7 +120,6 @@ public class FilePersonRepository implements PersonRepository {
 						&& p.getLastName().equals(name.split(" ")[1]))
 				.findAny()
 				.orElseThrow(() -> {
-					log.error("Person was not found.");
 					return new PersonNotFoundException("Person with this name does not exist.");
 				});
 
@@ -255,9 +256,5 @@ public class FilePersonRepository implements PersonRepository {
 		this.persons = persons;
 	}
 
-	public static FilePersonRepository getInstance() {
-		if (filePersonRepository == null) filePersonRepository= new FilePersonRepository();
-		return filePersonRepository;
-	}
 
 }

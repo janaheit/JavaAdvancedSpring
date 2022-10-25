@@ -8,7 +8,6 @@ import java.time.LocalDate;
 
 
 public class CompanySession extends Session {
-	private Logger log = LogManager.getLogger();
 	private static final double MIN_INVOICE = 900;
 	private static final double MAX_INVOICE = 5000;
 	
@@ -33,11 +32,9 @@ public class CompanySession extends Session {
 		Course c = this.getCourse();
 		double total = c.getDailyPrice() * c.getDays() * getNumberOfPersons();
 		if (total > MAX_INVOICE) {
-			log.error("Invoice exceeds limit.");
 			throw new InvoiceException("Invoice exceeds limit");
 		}
 		if (total < MIN_INVOICE) {
-			log.error("Invoice is too low.");
 			throw new InvoiceException("Invoice is too low.");
 		}
 		return total;

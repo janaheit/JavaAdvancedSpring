@@ -3,14 +3,16 @@ package be.abis.exercise.model;
 import be.abis.exercise.exception.ZipCodeNotCorrectException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Address {
-	private Logger log = LogManager.getLogger("exceptionLogger");
-	
+
 	private String street;
 	private String nr;
 	private String zipCode;
@@ -33,7 +35,7 @@ public class Address {
 	}
 
 	// BUSINESS METHODS
-	public void checkZipCode() throws ZipCodeNotCorrectException {
+	/*public void checkZipCode() throws ZipCodeNotCorrectException {
 
 		if (zipCode == null) throw new ZipCodeNotCorrectException("Zip code is null.");
 
@@ -42,7 +44,6 @@ public class Address {
 			Pattern p = Pattern.compile(regexBE);
 			Matcher m = p.matcher(zipCode);
 			if (!m.matches()) {
-				log.error("Zip code not correct for Belgium.");
 				throw new ZipCodeNotCorrectException("Zip code is not correct for Belgium");
 			}
 		} else if (countryCode.equals("NL")){
@@ -50,11 +51,10 @@ public class Address {
 			Pattern p = Pattern.compile(regexNL);
 			Matcher m = p.matcher(zipCode);
 			if (!m.matches()) {
-				log.error("Zip code not correct for the Netherlands.");
 				throw new ZipCodeNotCorrectException("Zip code is not correct for the Netherlands");
 			}
 		}
-	}
+	}*/
 
 	@Override
 	public boolean equals(Object o) {

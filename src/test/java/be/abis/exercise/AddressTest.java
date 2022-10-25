@@ -2,12 +2,18 @@ package be.abis.exercise;
 
 import be.abis.exercise.exception.ZipCodeNotCorrectException;
 import be.abis.exercise.model.Address;
+import be.abis.exercise.service.AddressService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 class AddressTest {
+
+    @Autowired private AddressService addressService;
 
     @BeforeEach
     void setUp() {
@@ -18,14 +24,14 @@ class AddressTest {
         Address address = new Address("Kanaalstraat", "85", "8933DB",
                 "Leeuwarden", "Netherlands", "NL");
 
-        assertDoesNotThrow(address::checkZipCode);
+        assertDoesNotThrow(() -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
     @Test
     void checkCorrectNLWithSpace() {
         Address address = new Address("Kanaalstraat", "85", "8933 DB",
                 "Leeuwarden", "Netherlands", "NL");
 
-        assertDoesNotThrow(address::checkZipCode);
+        assertDoesNotThrow(() -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
     @Test
@@ -33,7 +39,7 @@ class AddressTest {
         Address address = new Address("Kanaalstraat", "85", "8933 D5B",
                 "Leeuwarden", "Netherlands", "NL");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
     @Test
@@ -41,7 +47,7 @@ class AddressTest {
         Address address = new Address("Kanaalstraat", "85", "8933 DJB",
                 "Leeuwarden", "Netherlands", "NL");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
     @Test
@@ -49,14 +55,14 @@ class AddressTest {
         Address address = new Address("Kanaalstraat", "85", "8933 89",
                 "Leeuwarden", "Netherlands", "NL");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
     @Test
     void checkNullNLThrows(){
         Address address = new Address("Kanaalstraat", "85", null,
                 "Leeuwarden", "Netherlands", "NL");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
     @Test
@@ -64,7 +70,7 @@ class AddressTest {
         Address address = new Address("Kanaalstraat", "85", "",
                 "Leeuwarden", "Netherlands", "NL");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
     @Test
@@ -72,7 +78,7 @@ class AddressTest {
         Address address = new Address("Rue de Bourgogne", "99", "1190",
                 "Brussels", "België", "BE");
 
-        assertDoesNotThrow(address::checkZipCode);
+        assertDoesNotThrow(() -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
     @Test
@@ -80,7 +86,7 @@ class AddressTest {
         Address address = new Address("Rue de Bourgogne", "99", "119056",
                 "Brussels", "België", "BE");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
 
@@ -89,7 +95,7 @@ class AddressTest {
         Address address = new Address("Kanaalstraat", "85", "8933DB",
                 "Leeuwarden", "België", "BE");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
     @Test
@@ -97,7 +103,7 @@ class AddressTest {
         Address address = new Address("Kanaalstraat", "85", "0933",
                 "Leeuwarden", "België", "BE");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
     @Test
@@ -105,7 +111,7 @@ class AddressTest {
         Address address = new Address("Kanaalstraat", "85", null,
                 "Leeuwarden", "Netherlands", "BE");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 
     @Test
@@ -113,6 +119,6 @@ class AddressTest {
         Address address = new Address("Kanaalstraat", "85", "125",
                 "Leeuwarden", "Netherlands", "BE");
 
-        assertThrows(ZipCodeNotCorrectException.class, address::checkZipCode);
+        assertThrows(ZipCodeNotCorrectException.class, () -> addressService.checkZipcode(address.getZipCode(), address.getCountryCode()));
     }
 }

@@ -11,17 +11,20 @@ import java.util.List;
 
 import be.abis.exercise.exception.CompanyNotFoundException;
 import be.abis.exercise.model.Company;
+import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
+
+@Repository
 public class FileCompanyRepository implements CompanyRepository {
 
-	private static FileCompanyRepository fileCompanyRepository;
-	
 	private ArrayList<Company> companies = new ArrayList<Company>();
 
-	private FileCompanyRepository(){
+	public FileCompanyRepository(){
 		try {
 			List<String> compStrings = Files.readAllLines(Paths.get("/temp/javacourses/companies.txt"));
 			for(String s:compStrings){
+				System.out.println(s);
 				companies.add(new Company(s.trim()));
 			}
 			companies.trimToSize();
@@ -29,6 +32,11 @@ public class FileCompanyRepository implements CompanyRepository {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
+	}
+
+	@PostConstruct
+	public void init(){
+
 	}
 
 	@Override
@@ -60,10 +68,4 @@ public class FileCompanyRepository implements CompanyRepository {
 			System.out.println(e.getMessage());
 		}
 	}
-
-	public static FileCompanyRepository getInstance() {
-		if (fileCompanyRepository == null) fileCompanyRepository= new FileCompanyRepository();
-		return fileCompanyRepository;
-	}
-
 }

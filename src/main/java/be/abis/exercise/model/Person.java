@@ -14,8 +14,6 @@ import java.util.regex.Pattern;
 
 public class Person implements Instructor, CourseParticipant, Comparable<CourseParticipant> {
 
-	private Logger consoleLog = LogManager.getLogger("Console");
-	private Logger exceptionLogger = LogManager.getLogger("exceptionLogger");
 	private static int counter = 0;
 
 	private int personNumber;
@@ -38,7 +36,6 @@ public class Person implements Instructor, CourseParticipant, Comparable<CourseP
 			System.out.println(e.getMessage());
 		}
 
-		consoleLog.info("Person with first name "+ firstName + " created.");
 	}
 
 	public Person(String firstName, String lastName, LocalDate birthdate, Company company) {
@@ -185,7 +182,6 @@ public class Person implements Instructor, CourseParticipant, Comparable<CourseP
 		if (isValidEmail(email)){
 			this.email = email;
 		} else {
-			exceptionLogger.error("Unvalid email address");
 			throw new EmailNotCorrectException("This email is not valid, please enter another one.");
 		}
 	}
@@ -209,7 +205,4 @@ public class Person implements Instructor, CourseParticipant, Comparable<CourseP
 	public static int getNumberOfPersons() {
 		return counter;
 	}
-
-
-    
 }
